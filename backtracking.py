@@ -1,5 +1,7 @@
-# COMP560 A1 - BACKTRACKING // Sunnie Kwak
-file_ = open("usTestFile.txt", "r")
+# COMP560 A1 - BACKTRACKING SEARCH // Sunnie Kwak
+import fileinput
+
+file_ = fileinput.input()
 
 colors = []
 statelist = []
