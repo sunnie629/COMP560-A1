@@ -36,7 +36,7 @@ for x in file_:
 
 def coloring():
     changed = True
-    while changed: # loop runs until no changes have been made
+    while True: # loop runs until no changes have been made
         changed = False
         
         # initalize violations dictionary (will hold the number of violations for each state)
@@ -44,7 +44,7 @@ def coloring():
         for state in adj.keys():
             violations.update({state: 0})
 
-        sortedstate = [] # list that will hold states with the max number of violations
+        maxviolstates = [] # list that will hold states with the max number of violations
 
         # count violations (color is same for current state and adjacent state) per state
         for state in adj.keys():
@@ -54,24 +54,24 @@ def coloring():
 
         # get the highest number of violations (int)
         maxviol = max(violations, key=violations.get)
+        if maxviol == 0:
+            break
         maxviol = violations[maxviol]
         
         # if the highest number of violations is 0, there are no violations -> return True; solution has been found
         if maxviol == 0:
             return True
         
-        # add to sortedstate only if number of violations == max number (getting the most constrained variables)
+        # add to maxviolstates only if number of violations == max number (getting the most constrained variables)
         for v in violations:
             if violations[v] == maxviol: 
-                sortedstate.append(v)
+                maxviolstates.append(v)
 
-        choice = random.choice(sortedstate) # choose a random state from sortedstate
-        if violations[choice] > 0: # if violation exists, change color
-            changed = True
-            changecolor(choice)
-        else: 
-            break
-
+        choice = random.choice(maxviolstates) # choose a random state from maxviolstates
+        # if violation exists, change color
+        changed = True
+        changecolor(choice)
+        
         if time.time() > timeout: # if program runs for more than a minute, time out & return False
             return False
     return True

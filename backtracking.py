@@ -24,7 +24,6 @@ for x in file_:
     else:
         adj.update({x.strip() : []})
         sol.update({x.strip() : ''})
-        statelist.append(x.strip())
 
 # fill values (in list form) for adjacency dictionary
 # fill values so they go both ways (i.e. SA: NSW -> NSW: SA)
@@ -33,16 +32,19 @@ for x in file_:
     adj[state[0]].append(state[1].strip())
     adj[state[1].strip()].append(state[0])
 
+statelist = sorted(adj, key=lambda k: len(adj[k]), reverse=True) # list of states, sorted by number of adjacent states (highest first)
+
 def coloring(i):
     for color in colors: # loop through color options
-        if valid(i, color) == True: # if the current color does not match with any adjacent state (valid), assign that color to the state
+        if valid(i, color): # if valid (current color does not match with any adjacent state), assign that color to the state
             sol.update({statelist[i] : color})
             if i + 1 < len(statelist): 
                 if coloring(i + 1): # recursively call method to look at next state in array
                     return True
             else: # stops when i has gone through all states
                 return True
-            sol.update({statelist[i] : ''})
+            sol.update({statelist[i] : ''}) # if backtracked, get rid of color assignment to current state
+    print(sol)
     return False # if all possibilities are exhausted and not all states have valid colors, return False
 
 # checks if color for state is valid (no adjacent state has the color) 
