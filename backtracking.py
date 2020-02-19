@@ -1,22 +1,23 @@
 # COMP560 A1 - BACKTRACKING SEARCH // Sunnie Kwak
 import fileinput
 
-file_ = fileinput.input()
+file_ = fileinput.input() # reading file from STDIN
 
-colors = []
-statelist = []
-adj = {}
-sol = {}
-stepcount = [0]
-# fill in list of colors with colors provided
+colors = [] # list of colors
+adj = {} # adjancency dictionary
+statelist = [] # used for easy indexed reference to states
+sol = {} # solution dictionary that will be printed at the end
+stepcount = [0] # steps counter that will be printed at the end
+
+# fill list of colors with colors provided
 for x in file_:
     if x in ['\n', '\r\n']:
         break
     else:
         colors.append(x.strip())
 
-# fill in values for the adjacency dictionary & solution dictionary
-# and fill in list of states (list of states is just for reference to dictionary)
+# populate keys for the adjacency dictionary & solution dictionary
+# and fill list of states (list of states is just for reference to dictionary)
 for x in file_:
     if x in ['\n', '\r\n']:
         break
@@ -24,40 +25,37 @@ for x in file_:
         adj.update({x.strip() : []})
         sol.update({x.strip() : ''})
         statelist.append(x.strip())
-colored = [''] * len(statelist)
-# fill in values (in list form) for adjacency dictionary
+
+# fill values (in list form) for adjacency dictionary
+# fill values so they go both ways (i.e. SA: NSW -> NSW: SA)
 for x in file_:
     state = x.split(' ')
     adj[state[0]].append(state[1].strip())
     adj[state[1].strip()].append(state[0])
 
-# method to check if color for state is valid (no adjacent state has the color) 
-def valid(i, color):
-    stepcount[0] = stepcount[0] + 1
-    for adjstate in adj[statelist[i]]:
-        if sol[adjstate] == color:
-            return False
-    return True
-
 def coloring(i):
-    if colored[len(colored)-1] != '':
-        return True
-    for color in colors:
-        if valid(i, color) == True:
+    for color in colors: # loop through color options
+        if valid(i, color) == True: # if the current color does not match with any adjacent state (valid), assign that color to the state
             sol.update({statelist[i] : color})
-            colored[i]=color
-            if i + 1 < len(statelist):
-                if coloring(i + 1):
+            if i + 1 < len(statelist): 
+                if coloring(i + 1): # recursively call method to look at next state in array
                     return True
-            else:
+            else: # stops when i has gone through all states
                 return True
             sol.update({statelist[i] : ''})
-    return False
+    return False # if all possibilities are exhausted and not all states have valid colors, return False
+
+# checks if color for state is valid (no adjacent state has the color) 
+# if invalid, return False; else, return True
+def valid(i, color):
+    stepcount[0] = stepcount[0] + 1
+    for adjstate in adj[statelist[i]]: # loops through all adjacent states of current state (statelist[i])
+        if sol[adjstate] == color: # if the colors of any adjacent and current state match, return False (invalid)
+            return False
+    return True # only returns True if no adjacent state has the same color
 
 
-                    
-
-# call coloring with first item in statelist
+# if True, solution is found; else, no solution
 if coloring(0):
     print(sol)
     print("steps: " + str(stepcount[0]))

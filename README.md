@@ -1,7 +1,7 @@
 # COMP560-A1
 ## Sunnie Kwak
 
-## How to run:
+## To run:
 1. Clone the repository 
 2. cd into the repository
 3. Type `python3 file.py textfile.txt`
